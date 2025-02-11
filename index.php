@@ -2,5 +2,7 @@
 
 require_once 'src/database.php';
 
+echo '<pre>';
+
 $pdo = connect();
-echo gettype($pdo);
+print_r(getAllEmployees($pdo));

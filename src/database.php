@@ -13,3 +13,16 @@ function connect(): PDO
     $pdo = new PDO($dsn, $user, $password, $options);
     return $pdo;
 }
+
+function getAllEmployees(PDO $pdo): array
+{
+    $sql =<<<SQL
+        SELECT cFirstName, cLastName, dBirth
+        FROM employee
+        ORDER BY cFirstName, cLastName;
+    SQL;
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute();
+
+    return $stmt->fetchAll();
+}
