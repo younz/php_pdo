@@ -2,36 +2,45 @@
 
 require_once 'src/employee.php';
 
-$pdo = connect();
-$employees = getAllEmployees($pdo);
+$searchText = trim($_GET['search'] ?? '');
 
+$pdo = connect();
+if ($searchText === '') {
+    $employees = getAllEmployees($pdo);
+} else {
+    $employees = searchEmployees($pdo, $searchText);
+}
+if (!$employees) {
+    $errorMessage = 'There was an error while retrieving the list of employees.';
+}
+
+include_once 'views/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-    <header>
-        <h1>Company</h1>
-    </header>
     <main>
-        <section>
-            <?php foreach ($employees as $employee): ?>
-                <article>
-                    <p><strong>First name: </strong><?=$employee['cFirstName'] ?></p>
-                    <p><strong>Last name: </strong><?=$employee['cLastName'] ?></p>
-                    <p><strong>Birth date: </strong><?=$employee['dBirth'] ?></p>
-                </article>
-            <?php endforeach; ?>
-        </section>
+        <?php if (isset($errorMessage)): ?>
+            <section>
+                <p class="error"><?=$errorMessage ?></p>
+            </section>
+        <?php else: ?>
+            <form action="index.php" method="GET">
+                <div>
+                    <label for="txtSearch">Search</label>
+                    <input type="search" id="txtSearch" name="search">
+                </div>
+                <div>
+                    <button type="submit">Search</button>
+                </div>
+            </form>
+            <section>
+                <?php foreach ($employees as $employee): ?>
+                    <article>
+                        <p><strong>First name: </strong><?=$employee['cFirstName'] ?></p>
+                        <p><strong>Last name: </strong><?=$employee['cLastName'] ?></p>
+                        <p><strong>Birth date: </strong><?=$employee['dBirth'] ?></p>
+                        <p><a href="view.php?id=<?=$employee['nEmployeeID'] ?>">View details</a></p>
+                    </article>
+                <?php endforeach; ?>
+            </section>
+        <?php endif; ?>
     </main>
-    <footer>
-        <p>&copy; 2025 KEA Development</p>
-    </footer>
-</body>
-</html>
+<?php include_once 'views/footer.php'; ?>

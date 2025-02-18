@@ -10,3 +10,9 @@ article {
         margin: 0;
     }
 }
+
+.error {
+    padding: 1rem;
+    border: thick solid var(--colorError);
+    border-radius: 1rem;
+}
