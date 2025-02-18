@@ -16,6 +16,11 @@ if (!$employees) {
 
 include_once 'views/header.php';
 ?>
+    <nav>
+        <ul>
+            <li><a href="new.php" title="Create new employee">Add employee</a></li>
+        </ul>
+    </nav>
     <main>
         <?php if (isset($errorMessage)): ?>
             <section>
