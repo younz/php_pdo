@@ -9,8 +9,8 @@ if ($employeeID === 0) {
 
 require_once 'src/employee.php';
 
-$pdo = connect();
-$employee = getEmployeeByID($pdo, $employeeID);
+$employee = new Employee();
+$employee = $employee->getByID($employeeID);
 
 if (!$employee) {
     $errorMessage = 'There was an error retrieving employee information.';
