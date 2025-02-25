@@ -1,6 +1,7 @@
 <?php
 
 require_once 'database.php';
+require_once 'department.php';
 require_once 'logger.php';
 
 /**
@@ -96,15 +97,15 @@ function getEmployeeByID(PDO $pdo, int $employeeID): array|false
 /**
  * It validates employee data before putting it into the database
  * @param $employee Employee data in an associative array
- * @return An array with all validation error messages
+ * @return<array> An array with all validation error messages
  */
-function validateEmployee(array $employee): array
+function validateEmployee(PDO $pdo, array $employee): array
 {
     $firstName = trim($employee['first_name'] ?? '');
     $lastName = trim($employee['last_name'] ?? '');
     $email = trim($employee['email'] ?? '');
     $birthDate = trim($employee['birth_date'] ?? '');
-    $departmentID = trim($employee['department_id'] ?? '');
+    $departmentID = (int) ($employee['department'] ?? 0);
 
     $validationErrors = [];
 
@@ -114,8 +115,22 @@ function validateEmployee(array $employee): array
     if ($lastName === '') {
         $validationErrors[] = 'Last name is mandatory.';
     }
-    if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    if ($email === '') {
+        $validationErrors[] = 'Email is mandatory.';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $validationErrors[] = 'Invalid email format.';
+    }
+    if ($birthDate === '') {
+        $validationErrors[] = 'Birth date is mandatory.';
+    } elseif (!DateTime::createFromFormat('Y-m-d', $birthDate)) {
+        $validationErrors[] = 'Invalid birth date format.';
+    } elseif (DateTime::createFromFormat('Y-m-d', $birthDate) > new DateTime('-16 years')) {
+        $validationErrors[] = 'The employee must be at least 16 years old.';
+    }
+    if ($departmentID === 0) {
+        $validationErrors[] = 'Department is mandatory.';
+    } elseif (!getDepartmentByID($pdo, $departmentID)) {
+        $validationErrors[] = 'The department does not exist.';
     }
 
     return $validationErrors;

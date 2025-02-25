@@ -27,3 +27,32 @@ function getAllDepartments(PDO $pdo): array|false
         return false;
     }
 }
+
+/**
+ * It retrieves information regarding one department
+ * @param $pdo A PDO database connection
+ * @param $departmentID The ID of the department whose info to retrieve
+ * @return An associative array with department information,
+ *         or false if there was an error
+ */
+function getDepartmentByID(PDO $pdo, int $departmentID): array|false
+{
+    $sql =<<<SQL
+        SELECT cName
+        FROM department
+        WHERE nDepartmentID = :departmentID;
+    SQL;
+    try {
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':departmentID', $departmentID);
+        $stmt->execute();
+
+        if ($stmt->rowCount() === 1) {
+            return $stmt->fetch();
+        }
+        return false;
+    } catch (PDOException $e) {
+        logText('Error getting all departments: ', $e);
+        return false;
+    }
+}
