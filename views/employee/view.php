@@ -1,5 +1,7 @@
 <?php
 
+require_once '../../initialise.php';
+
 $employeeID = (int) ($_GET['id'] ?? 0);
 
 if ($employeeID === 0) {
@@ -7,7 +9,7 @@ if ($employeeID === 0) {
     exit;
 }
 
-require_once 'classes/Employee.php';
+require_once ROOT_PATH . '/classes/Employee.php';
 
 $employee = new Employee();
 $employee = $employee->getByID($employeeID);
@@ -18,7 +20,8 @@ if (!$employee) {
     $employee = $employee[0];
 }
 
-include_once 'views/header.php';
+$pageTitle = 'View Employee';
+include_once ROOT_PATH . '/public/header.php';
 
 ?>
 
@@ -41,4 +44,4 @@ include_once 'views/header.php';
         <?php endif; ?>
     </main>
 
-<?php include_once 'views/footer.php'; ?>
+<?php include_once ROOT_PATH . '/public/footer.php'; ?>
