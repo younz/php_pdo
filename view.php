@@ -7,7 +7,7 @@ if ($employeeID === 0) {
     exit;
 }
 
-require_once 'src/employee.php';
+require_once 'classes/Employee.php';
 
 $employee = new Employee();
 $employee = $employee->getByID($employeeID);

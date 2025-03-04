@@ -1,7 +1,7 @@
 <?php
 
-require_once 'src/employee.php';
-require_once 'src/department.php';
+require_once 'classes/Employee.php';
+require_once 'classes/Department.php';
 
 $department = new Department();
 $departments = $department->getAll();
